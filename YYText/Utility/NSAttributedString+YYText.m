@@ -627,6 +627,63 @@ return style. _attr_;
     return atr;
 }
 
++ (NSMutableAttributedString *)yy_attachmentStringWithContent:(id)content
+                                                  contentMode:(UIViewContentMode)contentMode
+                                               attachmentSize:(CGSize)attachmentSize
+                                                  alignToCTFont:(CTFontRef)ctfont
+                                                    alignment:(YYTextVerticalAlignment)alignment {
+    NSMutableAttributedString *atr = [[NSMutableAttributedString alloc] initWithString:YYTextAttachmentToken];
+    
+    YYTextAttachment *attach = [YYTextAttachment new];
+    attach.content = content;
+    attach.contentMode = contentMode;
+    [atr yy_setTextAttachment:attach range:NSMakeRange(0, atr.length)];
+    
+    CGFloat ascender = CTFontGetAscent(ctfont);
+    CGFloat descender = CTFontGetDescent(ctfont);
+    
+    YYTextRunDelegate *delegate = [YYTextRunDelegate new];
+    delegate.width = attachmentSize.width;
+    switch (alignment) {
+        case YYTextVerticalAlignmentTop: {
+            delegate.ascent = ascender;
+            delegate.descent = attachmentSize.height - ascender;
+            if (delegate.descent < 0) {
+                delegate.descent = 0;
+                delegate.ascent = attachmentSize.height;
+            }
+        } break;
+        case YYTextVerticalAlignmentCenter: {
+            CGFloat fontHeight = ascender - descender;
+            CGFloat yOffset = ascender - fontHeight * 0.5;
+            delegate.ascent = attachmentSize.height * 0.5 + yOffset;
+            delegate.descent = attachmentSize.height - delegate.ascent;
+            if (delegate.descent < 0) {
+                delegate.descent = 0;
+                delegate.ascent = attachmentSize.height;
+            }
+        } break;
+        case YYTextVerticalAlignmentBottom: {
+            delegate.ascent = attachmentSize.height + descender;
+            delegate.descent = -descender;
+            if (delegate.ascent < 0) {
+                delegate.ascent = 0;
+                delegate.descent = attachmentSize.height;
+            }
+        } break;
+        default: {
+            delegate.ascent = attachmentSize.height;
+            delegate.descent = 0;
+        } break;
+    }
+    
+    CTRunDelegateRef delegateRef = delegate.CTRunDelegate;
+    [atr yy_setRunDelegate:delegateRef range:NSMakeRange(0, atr.length)];
+    if (delegate) CFRelease(delegateRef);
+    
+    return atr;
+}
+
 + (NSMutableAttributedString *)yy_attachmentStringWithEmojiImage:(UIImage *)image
                                                         fontSize:(CGFloat)fontSize {
     if (!image || fontSize <= 0) return nil;

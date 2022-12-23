@@ -653,6 +653,12 @@ NS_ASSUME_NONNULL_BEGIN
                                                   alignToFont:(UIFont *)font
                                                     alignment:(YYTextVerticalAlignment)alignment;
 
++ (NSMutableAttributedString *)yy_attachmentStringWithContent:(id)content
+                                                  contentMode:(UIViewContentMode)contentMode
+                                               attachmentSize:(CGSize)attachmentSize
+                                                  alignToCTFont:(CTFontRef)ctfont
+                                                    alignment:(YYTextVerticalAlignment)alignment;
+
 /**
  Creates and returns an attahment from a fourquare image as if it was an emoji.
  
