@@ -3272,6 +3272,16 @@ typedef NS_ENUM(NSUInteger, YYTextMoveDirection) {
     [self replaceRange:[YYTextRange rangeWithRange:range] withText:@""];
 }
 
+- (void)deleteBackwardInRange:(NSRange)range
+{
+    [self replaceRange:[YYTextRange rangeWithRange:range] withText:@""];
+}
+
+- (NSString *)plainText
+{
+    return _text;
+}
+
 #pragma mark - @protocol UITextInput
 
 - (void)setInputDelegate:(id<UITextInputDelegate>)inputDelegate {
