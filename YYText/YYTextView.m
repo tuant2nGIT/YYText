@@ -3269,7 +3269,7 @@ typedef NS_ENUM(NSUInteger, YYTextMoveDirection) {
         [self _saveToUndoStack];
         [self _resetRedoStack];
     }
-    [self replaceRange:[YYTextRange rangeWithRange:range] withText:@""];
+    [self deleteBackwardInRange:range];
 }
 
 - (void)deleteBackwardInRange:(NSRange)range
